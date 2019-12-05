@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rockstar Suggestions</title>
+</head>
+<body>
+    <div id="app">
+        <label>Characters:</label>
+        <input type="radio" name="wordLength" v-model="wordLength" value="4"> 4
+        <input type="radio" name="wordLength" v-model="wordLength" value="5"> 5
+        <input type="radio" name="wordLength" v-model="wordLength" value="6"> 6
+        <input type="radio" name="wordLength" v-model="wordLength" value="7"> 7
+        <input type="radio" name="wordLength" v-model="wordLength" value="8"> 8
+        <input type="radio" name="wordLength" v-model="wordLength" value="9"> 9
+        <input type="radio" name="wordLength" v-model="wordLength" value="10"> 10
+        <input type="radio" name="wordLength" v-model="wordLength" value="11"> 11
+        <input type="radio" name="wordLength" v-model="wordLength" value="12"> 12
+        <input type="radio" name="wordLength" v-model="wordLength" value="13"> 13
+        <input type="radio" name="wordLength" v-model="wordLength" value="14"> 14
+        <input type="radio" name="wordLength" v-model="wordLength" value="15"> 15
+        <button @click="refresh()">More!</button>
+        <ul>
+            <li v-for="item in items">{{item}}</li>
+        </ul>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                wordLength: 4,
+                items: [],
+                all: {}
+            },
+            methods: {
+                refresh: function() {
+                    if (this.all && this.all[this.wordLength]) {
+                        let randomized = this.all[this.wordLength].sort((a, b) => Math.random() * 2 - 1).slice(0, 20);
+                        this.items = randomized;
+                    }
+                }
+            },
+            watch: {
+                wordLength: function() {
+                    this.refresh();
+                }
+            },
+            created: function() {
+                fetch("words-by-length.json").then(response => {
+                    console.log(response);
+                    response.json().then(data => {
+                        data.forEach(x => {
+                            this.all[x.Length] = x.Words;
+                        });
+                        this.refresh();
+                    });
+                });
+            }
+        })
+    </script>
+</body>
+</html>
